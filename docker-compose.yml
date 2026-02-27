@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -58,6 +56,11 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379
+      AI_ORCHESTRATOR_URL: http://ai-orchestrator:8000
     command: sh -c "node apps/backend/dist/db/migrate.js && node apps/backend/dist/index.js"
     depends_on:
       postgres:
@@ -77,6 +80,11 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379
+      AI_ORCHESTRATOR_URL: http://ai-orchestrator:8000
     command: node apps/backend/dist/queues/worker.js
     depends_on:
       postgres:
@@ -94,6 +102,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      NODE_ENV: production
     depends_on:
       - backend
     ports:

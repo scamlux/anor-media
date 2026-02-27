@@ -1,10 +1,32 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { db } from "./pool.js";
 import { logger } from "../services/logger.js";
 
 async function run(): Promise<void> {
-  const migrationsDir = path.resolve(process.cwd(), "src/db/migrations");
+  const currentDir = path.dirname(fileURLToPath(import.meta.url));
+  const candidateDirs = [
+    path.resolve(currentDir, "migrations"),
+    path.resolve(process.cwd(), "src/db/migrations"),
+    path.resolve(process.cwd(), "apps/backend/src/db/migrations")
+  ];
+
+  let migrationsDir: string | null = null;
+  for (const dir of candidateDirs) {
+    try {
+      await fs.access(dir);
+      migrationsDir = dir;
+      break;
+    } catch {
+      // continue scanning candidates
+    }
+  }
+
+  if (!migrationsDir) {
+    throw new Error(`Migrations directory not found. Checked: ${candidateDirs.join(", ")}`);
+  }
+
   const files = (await fs.readdir(migrationsDir)).filter((file) => file.endsWith(".sql")).sort();
 
   await db.query(`

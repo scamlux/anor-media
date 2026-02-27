@@ -21,4 +21,4 @@ COPY --from=builder /app/packages/shared ./packages/shared
 COPY --from=builder /app/apps/frontend/package.json ./apps/frontend/package.json
 COPY --from=builder /app/apps/frontend/next.config.ts ./apps/frontend/next.config.ts
 COPY --from=builder /app/apps/frontend/tsconfig.json ./apps/frontend/tsconfig.json
-CMD ["node_modules/.bin/next", "start", "apps/frontend", "-p", "3000"]
+CMD ["node_modules/.bin/next", "start", "apps/frontend", "-H", "0.0.0.0", "-p", "3000"]

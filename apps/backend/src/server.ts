@@ -43,6 +43,11 @@ export function createApp() {
     res.json(status);
   });
 
+  app.get("/api/health", async (_req, res) => {
+    const status = await getHealthStatus();
+    res.json(status);
+  });
+
   app.get("/metrics", async (_req, res) => {
     if (env.PROMETHEUS_ENABLED !== "true") {
       res.status(404).send("Metrics disabled");

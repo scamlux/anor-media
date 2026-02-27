@@ -3,7 +3,7 @@ import { QUEUE_NAMES, JOB_NAMES } from "../constants/queues.js";
 import { redisConnection } from "./connection.js";
 import type { GeneratePlanJobPayload, GeneratePostJobPayload } from "./types.js";
 
-const planQueue = new Queue<GeneratePlanJobPayload>(QUEUE_NAMES.PLAN_GENERATION, {
+const planQueue = new Queue<GeneratePlanJobPayload, void, typeof JOB_NAMES.GENERATE_PLAN>(QUEUE_NAMES.PLAN_GENERATION, {
   connection: redisConnection,
   defaultJobOptions: {
     attempts: 3,
@@ -16,7 +16,7 @@ const planQueue = new Queue<GeneratePlanJobPayload>(QUEUE_NAMES.PLAN_GENERATION,
   }
 });
 
-const postQueue = new Queue<GeneratePostJobPayload>(QUEUE_NAMES.POST_GENERATION, {
+const postQueue = new Queue<GeneratePostJobPayload, void, typeof JOB_NAMES.GENERATE_POST>(QUEUE_NAMES.POST_GENERATION, {
   connection: redisConnection,
   defaultJobOptions: {
     attempts: 3,

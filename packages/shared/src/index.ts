@@ -1,2 +1,2 @@
-export * from "./types/domain";
-export * from "./schemas/ai";
+export * from "./types/domain.js";
+export * from "./schemas/ai.js";
